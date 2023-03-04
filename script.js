@@ -64,32 +64,28 @@ function GameController(player1, player2){
     const getActiviePlayer = () => activePlayer;
 
     const checkWinner = () => {
-        // console.log(board.getBoard);
-
-        // board.getBoard().forEach(row => row.forEach(col => {
-        //     console.log(col.getValue())
-        // }));
-        // console.log(board.getBoard()[0][0].getValue())
-        console.log(board.getBoard()[0][0].getValue());
         for(let i = 0; i < 3; i++){
-            for (let j = 0; j < 3; j++){
-                console.log(board.getBoard()[i][j].getValue());
+            for (let j = 0; j < 1; j++){
+                if((board.getBoard()[i][j].getValue() === board.getBoard()[i][j+1].getValue()) &&  (board.getBoard()[i][j+1].getValue()=== board.getBoard()[i][j+2].getValue()) && board.getBoard()[i][j].getValue() !== "" ){
+                    return true;
+                }
+                else if((board.getBoard()[j][i].getValue() === board.getBoard()[j+1][i].getValue()) &&  (board.getBoard()[j+1][i].getValue()=== board.getBoard()[j+2][i].getValue()) && board.getBoard()[j][i].getValue() !== ""){
+                    return true;
+                }else if((board.getBoard()[0][0].getValue() === board.getBoard()[1][1].getValue()) &&  (board.getBoard()[1][1].getValue()=== board.getBoard()[2][2].getValue()) && board.getBoard()[0][0].getValue() !== ""){
+                    return true;
+                }else if((board.getBoard()[0][2].getValue() === board.getBoard()[1][1].getValue()) &&  (board.getBoard()[1][1].getValue()=== board.getBoard()[2][0].getValue()) && board.getBoard()[0][2].getValue() !== ""){
+                    return true;
+                }
+              }
             }
-
-            }
+            return false;
         }
 
-
-
     const playTurn = (row, col) => {
-        let old = board.printBoard().toString();
-
+        let oldBoard = board.printBoard().toString();
         board.updateBoard(getActiviePlayer().marker, row, col);
-        let newb = board.printBoard().toString();
-
-
-        if(!old === newb){ switchTurn();}
-
+        let newBoard = board.printBoard().toString();
+        if(oldBoard !== newBoard){ switchTurn();}
 
     }
     return {
@@ -128,11 +124,16 @@ function ScreenController(){
         let rows = parseInt(e.target.dataset.row);
         game.playTurn(rows, parseInt(e.target.dataset.col));
         updateBoard();
-        game.checkWinner();
+       if(game.checkWinner()){
+        console.log(`${game.getActiviePlayer().name} has won the game`)
+        let btns = boardContainer.childNodes;
+        btns.forEach(btn => {
+            btn.disabled = true;
+        })
+        }
     })
 
     updateBoard();
-    game.checkWinner();
 
 }
 
